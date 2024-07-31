@@ -886,8 +886,7 @@ SUBROUTINE WriteSummaryFile( UnSum, g, MSL2SWL, WtrDpth, numJoints, numNodes, no
       WRITE( UnSum,  '(/)' ) 
       WRITE( UnSum, '(1X,A10,11(2X,A10))' ) '  Label   ', '    Xi    ',  '    Yi    ', '    Zi    ', ' MemberID ', ' StartXi  ',  ' StartYi  ', ' StartZi  ', '  EndXi   ', '  EndYi   ', '  EndZi   ', '   Loc    '
       WRITE( UnSum, '(1X,A10,11(2X,A10))' ) '   (-)    ', '    (m)   ',  '    (m)   ', '    (m)   ', '   (-)    ', '   (m)    ',  '   (m)    ', '   (m)    ', '   (m)    ', '   (m)    ', '   (m)    ', '   (-)    '
-      
-      
+            
       DO I = 1,NOutputs
 
          tmpName =  OutParam(I)%Name
@@ -895,10 +894,17 @@ SUBROUTINE WriteSummaryFile( UnSum, g, MSL2SWL, WtrDpth, numJoints, numNodes, no
                
          IF ( ( INDEX( 'mM', tmpName(1:1) ) > 0 ) .AND. (OutParam(I)%Units /= 'INVALID' ) ) THEN
                !Get Member index and Node index
-            read (tmpName(2:2),*) mbrIndx
-            read (tmpName(4:4),*) nodeIndx
-            
-             
+            IF (tmpName(3:3) /= 'N') THEN  !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+               read (tmpName(2:3),*) mbrIndx
+            ELSE
+               read (tmpName(2:2),*) mbrIndx
+            END IF
+
+            IF (tmpName(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+               read (tmpName(5:5),*) nodeIndx   
+            ELSE
+               read (tmpName(4:4),*) nodeIndx
+            END IF
            
             s  = MOutLst(mbrIndx)%NodeLocs(nodeIndx)
             ! Find the member starting and ending node locations
@@ -1893,7 +1899,10 @@ SUBROUTINE Morison_Init( InitInp, u, p, x, xd, z, OtherState, y, m, Interval, In
    p%OutSwtch   = InitInp%OutSwtch
    p%MSL2SWL    = InitInp%MSL2SWL
    p%VisMeshes  = InitInp%VisMeshes                       ! visualization mesh for morison elements
-   
+  
+   !WRITE()p%NumOuts, p%NMOutputs
+   !READ(*,*) 
+
    ALLOCATE ( p%MOutLst(p%NMOutputs), STAT = errStat )
    IF ( errStat /= ErrID_None ) THEN
       errMsg  = ' Error allocating space for MOutLst array.'

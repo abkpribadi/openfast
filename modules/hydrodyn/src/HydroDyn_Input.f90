@@ -83,8 +83,13 @@ FUNCTION CheckMeshOutput( output, numMemberOut, MOutLst, numJointOut )
 
       IF (( INDEX( 'mM', outputTmp(1:1) ) > 0 ) .OR. ( INDEX( 'jJ', outputTmp(1:1) ) > 0 )) THEN
          ! Read the second character, it should be a number from 1 to 9
-      
-         READ( outputTmp(2:2), '(i1)', IOSTAT = ErrStat) indx1
+
+         IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+            READ( outputTmp(2:3), '(i2)', IOSTAT = ErrStat) indx1
+         ELSE
+            READ( outputTmp(2:2), '(i1)', IOSTAT = ErrStat) indx1
+         END IF
+
          IF ( ErrStat /=0 ) THEN
             ! Not a numerical digit!!!
             CheckMeshOutput = .FALSE.
@@ -98,12 +103,16 @@ FUNCTION CheckMeshOutput( output, numMemberOut, MOutLst, numJointOut )
                RETURN
             END IF
                ! Now make sure the next letter is n or N and then look for the second index
-               IF ( INDEX( 'nN', outputTmp(3:3) ) == 0 ) THEN
-                     ! Invalid member label
-                  CheckMeshOutput = .FALSE.
-                  RETURN
+               !IF ( INDEX( 'nN', outputTmp(3:3) ) == 0 ) THEN
+               !      ! Invalid member label
+               !   CheckMeshOutput = .FALSE.
+               !   RETURN
+               !END IF
+               IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+                  READ( outputTmp(5:5), '(i1)', IOSTAT = ErrStat) indx2
+               ELSE
+                  READ( outputTmp(4:4), '(i1)', IOSTAT = ErrStat) indx2
                END IF
-               READ( outputTmp(4:4), '(i1)', IOSTAT = ErrStat) indx2
                IF ( indx2 > MOutLst(indx1)%NOutLoc ) THEN
                   CheckMeshOutput = .FALSE.
                   RETURN
@@ -111,7 +120,8 @@ FUNCTION CheckMeshOutput( output, numMemberOut, MOutLst, numJointOut )
             
          
          END IF 
-      
+
+
          IF ( INDEX( 'jJ', outputTmp(1:1) ) > 0 ) THEN 
             IF ( indx1 > numJointOut ) THEN
                CheckMeshOutput = .FALSE.
@@ -1171,6 +1181,8 @@ SUBROUTINE HydroDyn_ParseInput( InputFileName, OutRootName, defWtrDens, defWtrDp
 
          READ(Line,*,IOSTAT=ErrStat2) InputFileData%Morison%MOutLst(I)%MemberID,  InputFileData%Morison%MOutLst(I)%NOutLoc,  &
                                       InputFileData%Morison%MOutLst(I)%NodeLocs
+
+        
 
          IF ( ErrStat2 /= 0 ) THEN
             ErrStat2 = ErrID_Fatal
@@ -2972,8 +2984,8 @@ SUBROUTINE HydroDynInput_ProcessInitData( InitInp, Interval, InputFileData, ErrS
    ! Member Output List Section
    !-------------------------------------------------------------------------------------------------
 
-   IF ( ( InputFileData%Morison%NMOutputs < 0 ) .OR. ( InputFileData%Morison%NMOutputs > 9 ) ) THEN
-      CALL SetErrStat( ErrID_Fatal,'NMOutputs in the Member output list must be greater or equal to zero and less than 10.',ErrStat,ErrMsg,RoutineName)
+   IF ( ( InputFileData%Morison%NMOutputs < 0 ) .OR. ( InputFileData%Morison%NMOutputs > 15 ) ) THEN
+      CALL SetErrStat( ErrID_Fatal,'NMOutputs in the Member output list must be greater or equal to zero and less than 16.',ErrStat,ErrMsg,RoutineName)
       RETURN
    END IF
 
@@ -3018,7 +3030,7 @@ SUBROUTINE HydroDynInput_ProcessInitData( InitInp, Interval, InputFileData, ErrS
    ! Joint Output List Section
    !-------------------------------------------------------------------------------------------------
 
-   IF ( ( InputFileData%Morison%NJOutputs < 0 ) .OR. ( InputFileData%Morison%NMOutputs > 9 ) ) THEN
+   IF ( ( InputFileData%Morison%NJOutputs < 0 ) .OR. ( InputFileData%Morison%NJOutputs > 9 ) ) THEN
       CALL SetErrStat( ErrID_Fatal,'NJOutputs in the Joint output list must be greater or equal to zero and less than 10.',ErrStat,ErrMsg,RoutineName)
       RETURN
    END IF
@@ -3093,7 +3105,8 @@ SUBROUTINE HydroDynInput_ProcessInitData( InitInp, Interval, InputFileData, ErrS
 !      InputFileData%WAMIT2%NumOuts  = GetWAMIT2Channels   ( InputFileData%NUserOutputs, InputFileData%UserOutputs, InputFileData%WAMIT2%OutList, foundMask, ErrStat2, ErrMsg2 ); CALL SetErrStat(ErrStat2,ErrMsg2,ErrStat,ErrMsg,RoutineName)
 !
          ! Extract Morison list
-         !foundMask = .FALSE.
+         !foundMask = .FALSE
+
       InputFileData%Morison%NumOuts = GetMorisonChannels  ( InputFileData%NUserOutputs, InputFileData%UserOutputs, InputFileData%Morison%OutList, foundMask, ErrStat2, ErrMsg2 ); CALL SetErrStat(ErrStat2,ErrMsg2,ErrStat,ErrMsg,RoutineName)
    
          ! Attach remaining items to the HydroDyn list
