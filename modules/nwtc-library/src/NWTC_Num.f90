@@ -1064,7 +1064,7 @@ CONTAINS
 !!  0          &  \lambda_3 & -\lambda_2 \\
 !!  -\lambda_3 &  0         &  \lambda_1 \\
 !!   \lambda_2 & -\lambda_1 &  0          
-!! 	\end{bmatrix}
+!!    \end{bmatrix}
 !! \f}   
 !! The angle of rotation for \f$\lambda\f$ is 
 !! \f{equation}{ \theta = \sqrt{{\lambda_1}^2+{\lambda_2}^2+{\lambda_3}^2} \f}
@@ -2229,9 +2229,6 @@ INTEGER FUNCTION FindValidChannelIndx(OutListVal, ValidParamAry, SignM_out) RESU
 
       Indx = IndexCharAry( OutListTmp(1:OutStrLenM1), ValidParamAry )
 
-
-         ! If it started with an "M" (CheckOutListAgain) we didn't find the value in our list (Indx < 1)
-
       IF ( CheckOutListAgain .AND. Indx < 1 ) THEN    ! Let's assume that "M" really meant "minus" and then test again
          SignM         = -1                     ! ex, "MTipDxc1" causes the sign of TipDxc1 to be switched.
          OutListTmp    = OutListTmp(2:)
@@ -2711,34 +2708,55 @@ END FUNCTION FindValidChannelIndx
 
    ILo = 1
    IHi = SIZE(CAry)
-
+   
    IF (     CVal == CAry(ILo) ) THEN
       IndexCharAry = ILo
+
+      
    ELSEIF ( CVal == CAry(IHi) ) THEN
       IndexCharAry = IHi
-   ELSE
+
+   ELSEIF (CVal(1:1) == 'M' .AND. CVal(3:3) /= 'N' .AND. CVal(6:7) == 'FD') THEN !! MODIFIED TO GET ADDITIONAL DRAG OUTPUT UP TO 15 MEMBERS
       IndexCharAry = -1
-
-
-         ! Let's search!
-
+      IHi = 162 !! Max. range of additional Morison member outputs, should eventually store this variable in Types
       DO WHILE ( IHi-ILo > 1 )
 
          IMid = ( IHi + ILo )/2
 
          IF( CVal > CAry(IMid) ) THEN
             ILo = IMid
+
          ELSEIF (CVal < CAry(IMid) ) THEN
             IHi = IMid
          ELSE !Found it
+
             IndexCharAry = IMid
+
+            EXIT
+         END IF
+      END DO
+
+   ELSE
+      IndexCharAry = -1
+      DO WHILE ( IHi-ILo > 1 )
+
+         IMid = ( IHi + ILo )/2
+
+         IF( CVal > CAry(IMid) ) THEN
+            ILo = IMid
+
+         ELSEIF (CVal < CAry(IMid) ) THEN
+            IHi = IMid
+         ELSE !Found it
+
+            IndexCharAry = IMid
+
             EXIT
          END IF
 
       END DO
 
    END IF
-
 
    RETURN
 
