@@ -84,7 +84,7 @@ FUNCTION CheckMeshOutput( output, numMemberOut, MOutLst, numJointOut )
       IF (( INDEX( 'mM', outputTmp(1:1) ) > 0 ) .OR. ( INDEX( 'jJ', outputTmp(1:1) ) > 0 )) THEN
          ! Read the second character, it should be a number from 1 to 9
 
-         IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+         IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 16 MEMBERS
             READ( outputTmp(2:3), '(i2)', IOSTAT = ErrStat) indx1
          ELSE
             READ( outputTmp(2:2), '(i1)', IOSTAT = ErrStat) indx1
@@ -108,7 +108,8 @@ FUNCTION CheckMeshOutput( output, numMemberOut, MOutLst, numJointOut )
                !   CheckMeshOutput = .FALSE.
                !   RETURN
                !END IF
-               IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+               IF (outputTmp(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 16 MEMBERS
+
                   READ( outputTmp(5:5), '(i1)', IOSTAT = ErrStat) indx2
                ELSE
                   READ( outputTmp(4:4), '(i1)', IOSTAT = ErrStat) indx2
@@ -2984,14 +2985,13 @@ SUBROUTINE HydroDynInput_ProcessInitData( InitInp, Interval, InputFileData, ErrS
    ! Member Output List Section
    !-------------------------------------------------------------------------------------------------
 
-   IF ( ( InputFileData%Morison%NMOutputs < 0 ) .OR. ( InputFileData%Morison%NMOutputs > 15 ) ) THEN
-      CALL SetErrStat( ErrID_Fatal,'NMOutputs in the Member output list must be greater or equal to zero and less than 16.',ErrStat,ErrMsg,RoutineName)
+   IF ( ( InputFileData%Morison%NMOutputs < 0 ) .OR. ( InputFileData%Morison%NMOutputs > 16 ) ) THEN
+      CALL SetErrStat( ErrID_Fatal,'NMOutputs in the Member output list must be greater or equal to zero and less than 17.',ErrStat,ErrMsg,RoutineName)
       RETURN
    END IF
 
    IF ( InputFileData%Morison%NMOutputs > 0 ) THEN
-
-
+      
       DO I = 1,InputFileData%Morison%NMOutputs
 
          InputFileData%Morison%MOutLst(I)%MemberIDIndx = -1

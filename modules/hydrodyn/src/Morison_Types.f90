@@ -33,7 +33,7 @@ MODULE Morison_Types
 !---------------------------------------------------------------------------------------------------------------------------------
 USE NWTC_Library
 IMPLICIT NONE
-    INTEGER(IntKi), PUBLIC, PARAMETER  :: MaxMrsnOutputs = 4761      ! Total number of possible Morison module output channels [-]
+    INTEGER(IntKi), PUBLIC, PARAMETER  :: MaxMrsnOutputs = 4788      ! Total number of possible Morison module output channels [-]
 ! =========  Morison_JointType  =======
   TYPE, PUBLIC :: Morison_JointType
     INTEGER(IntKi)  :: JointID      !< User-specified integer ID for the given joint [-]

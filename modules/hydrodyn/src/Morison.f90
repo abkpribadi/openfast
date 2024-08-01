@@ -894,13 +894,13 @@ SUBROUTINE WriteSummaryFile( UnSum, g, MSL2SWL, WtrDpth, numJoints, numNodes, no
                
          IF ( ( INDEX( 'mM', tmpName(1:1) ) > 0 ) .AND. (OutParam(I)%Units /= 'INVALID' ) ) THEN
                !Get Member index and Node index
-            IF (tmpName(3:3) /= 'N') THEN  !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+            IF (tmpName(3:3) /= 'N') THEN  !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 16 MEMBERS
                read (tmpName(2:3),*) mbrIndx
             ELSE
                read (tmpName(2:2),*) mbrIndx
             END IF
 
-            IF (tmpName(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 15 MEMBERS
+            IF (tmpName(3:3) /= 'N') THEN !! MODIFIED TO READ ADDITIONAL MORISON DRAG OUTPUT UP TO 16 MEMBERS
                read (tmpName(5:5),*) nodeIndx   
             ELSE
                read (tmpName(4:4),*) nodeIndx

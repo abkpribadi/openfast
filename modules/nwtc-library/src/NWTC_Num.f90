@@ -2716,9 +2716,9 @@ END FUNCTION FindValidChannelIndx
    ELSEIF ( CVal == CAry(IHi) ) THEN
       IndexCharAry = IHi
 
-   ELSEIF (CVal(1:1) == 'M' .AND. CVal(3:3) /= 'N' .AND. CVal(6:7) == 'FD') THEN !! MODIFIED TO GET ADDITIONAL DRAG OUTPUT UP TO 15 MEMBERS
+   ELSEIF (CVal(1:1) == 'M' .AND. CVal(3:3) /= 'N' .AND. CVal(6:7) == 'FD') THEN !! MODIFIED TO GET ADDITIONAL DRAG OUTPUT UP TO 16 MEMBERS
       IndexCharAry = -1
-      IHi = 162 !! Max. range of additional Morison member outputs, should eventually store this variable in Types
+      IHi = 190 !! Max. range of additional Morison member outputs, should eventually store this variable in Types
       DO WHILE ( IHi-ILo > 1 )
 
          IMid = ( IHi + ILo )/2
