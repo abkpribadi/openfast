@@ -2716,28 +2716,15 @@ END FUNCTION FindValidChannelIndx
    ELSEIF ( CVal == CAry(IHi) ) THEN
       IndexCharAry = IHi
 
-   ELSEIF (CVal(1:1) == 'M' .AND. CVal(3:3) /= 'N' .AND. CVal(6:7) == 'FD') THEN !! MODIFIED TO GET ADDITIONAL DRAG OUTPUT UP TO 16 MEMBERS
-      IndexCharAry = -1
-      IHi = 190 !! Max. range of additional Morison member outputs, should eventually store this variable in Types
-      DO WHILE ( IHi-ILo > 1 )
-
-         IMid = ( IHi + ILo )/2
-
-         IF( CVal > CAry(IMid) ) THEN
-            ILo = IMid
-
-         ELSEIF (CVal < CAry(IMid) ) THEN
-            IHi = IMid
-         ELSE !Found it
-
-            IndexCharAry = IMid
-
-            EXIT
-         END IF
-      END DO
-
    ELSE
       IndexCharAry = -1
+      IF (CAry(ILo)=="M10N1FDXI") THEN !! MODIFIED TO GET ADDITIONAL DRAG OUTPUT UP TO 16 MEMBERS
+         IF (CVal(1:1) == 'M' .AND. CVal(3:3) /= 'N' .AND. CVal(6:7) == 'FD') THEN 
+            IHi = 190 !! ASCII alphabet sorting doesnt work as intended for the additional members output
+         ELSE
+            ILo = 190 !! Index for the starting point of the original output 
+         END IF
+      END IF
       DO WHILE ( IHi-ILo > 1 )
 
          IMid = ( IHi + ILo )/2

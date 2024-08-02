@@ -6830,7 +6830,6 @@ SUBROUTINE MrsnOut_MapOutputs( CurrentTime, y, p, u, m, AllOuts, ErrStat, ErrMsg
          AllOuts(JDynP(  I))   = m%FDynP(    m1)               ! fluid dynamic pressure
          AllOuts(JSTVi (:,I))  = u%Mesh%TranslationVel(:  ,m1) ! structural velocity
          AllOuts(JSTAi (:,I))  = u%Mesh%TranslationAcc(:  ,m1) ! structural acceleration
-         
          AllOuts(JFDi (:,I))   = m%F_D_End (1:3, m1)           ! axial drag force
          AllOuts(JFBi (:,I))   = m%F_B_End (1:3, m1)           ! buoyancy force
          AllOuts(JMBi (:,I))   = m%F_B_End (4:6, m1)           ! buoyancy moment
@@ -9440,15 +9439,15 @@ FUNCTION   GetMorisonChannels    ( NUserOutputs, UserOutputs, OutList, foundMask
    newFoundMask    = .FALSE.
    
     DO I = 1,NUserOutputs
-      IF (.NOT. foundMask(I) ) THEN
+       IF (.NOT. foundMask(I) ) THEN
          Indx = FindValidChannelIndx(UserOutputs(I), ValidParamAry)
-         IF ( Indx > 0 ) THEN     
+         IF ( Indx > 0 ) THEN
             newFoundMask(I)    = .TRUE.
             foundMask(I)       = .TRUE.
             GetMorisonChannels = GetMorisonChannels + 1
-      END IF
-    END IF  
-END DO
+         END IF
+       END IF
+    END DO
    
 IF ( GetMorisonChannels > 0 ) THEN
    
@@ -9564,9 +9563,10 @@ SUBROUTINE MrsnOut_ChkOutLst( OutList, ValidOutList, y, p, ErrStat, ErrMsg )
          
       IF ( Indx > 0 ) THEN
          p%OutParam(I)%Indx = ParamIndxAry(Indx)
+
          IF ( InvalidOutput( ParamIndxAry(Indx) ) ) THEN
             p%OutParam(I)%Units = 'INVALID' 
-            p%OutParam(I)%SignM =  0           
+            p%OutParam(I)%SignM =  0
          ELSE
             p%OutParam(I)%Units = ParamUnitsAry(Indx)
          END IF
@@ -9585,7 +9585,7 @@ SUBROUTINE MrsnOut_ChkOutLst( OutList, ValidOutList, y, p, ErrStat, ErrMsg )
          ErrStat = ErrID_Warn
          p%OutParam(I)%Units = 'INVALID'
          p%OutParam(I)%Indx  =  1
-         p%OutParam(I)%SignM =  0     
+         p%OutParam(I)%SignM =  0
       END IF
       
    END DO

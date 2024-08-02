@@ -1900,8 +1900,6 @@ SUBROUTINE Morison_Init( InitInp, u, p, x, xd, z, OtherState, y, m, Interval, In
    p%MSL2SWL    = InitInp%MSL2SWL
    p%VisMeshes  = InitInp%VisMeshes                       ! visualization mesh for morison elements
   
-   !WRITE()p%NumOuts, p%NMOutputs
-   !READ(*,*) 
 
    ALLOCATE ( p%MOutLst(p%NMOutputs), STAT = errStat )
    IF ( errStat /= ErrID_None ) THEN
